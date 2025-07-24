@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://dyp4wso7yvdgg"]
+
+[node name="Cutscene" type="Node3D"]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]

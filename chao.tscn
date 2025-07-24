@@ -1,0 +1,72 @@
+[gd_scene load_steps=12 format=3 uid="uid://bgu1ddmogj56x"]
+
+[ext_resource type="PackedScene" uid="uid://bkidgvh5g3f4s" path="res://scenes/player.tscn" id="1_ruwbc"]
+[ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://addons/virtual_joystick/virtual_joystick_scene.tscn" id="2_fd5yc"]
+[ext_resource type="PackedScene" uid="uid://ciu3c7rf4tdv1" path="res://barn_lowpoly.glb" id="4_oqwal"]
+[ext_resource type="AudioStream" uid="uid://2xn67ecok7iy" path="res://scary-sound-effect-359877.mp3" id="4_uucx4"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ruwbc"]
+albedo_color = Color(1, 1, 0.09803922, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_sgmvh"]
+material = SubResource("StandardMaterial3D_ruwbc")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5ruwd"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ruwbc"]
+
+[sub_resource type="Sky" id="Sky_fd5yc"]
+sky_material = SubResource("ProceduralSkyMaterial_ruwbc")
+
+[sub_resource type="Environment" id="Environment_uucx4"]
+background_mode = 2
+sky = SubResource("Sky_fd5yc")
+
+[sub_resource type="BoxMesh" id="BoxMesh_uucx4"]
+
+[node name="chao" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(6.1342173, 0, 0, 0, 0.19859451, 0, 0, 0, 5.0111938, -4.446865, 0, -7.8249063)
+mesh = SubResource("BoxMesh_sgmvh")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
+shape = SubResource("BoxShape3D_5ruwd")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_uucx4")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 0.013805182, 0.99990475, 0, -0.99990475, 0.013805182, 0, 6.4144807, 0)
+
+[node name="CharacterBody3D" parent="." instance=ExtResource("1_ruwbc")]
+transform = Transform3D(0.03313776, -0.06308681, -0.9974578, 0, 0.99800587, -0.063121475, 0.99945074, 0.0020917053, 0.033071697, -6.6795807, 0.7932229, -7.3743095)
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Virtual Joystick" parent="." instance=ExtResource("2_fd5yc")]
+offset_top = -300.0
+offset_bottom = 0.0
+
+[node name="TouchScreenButton" type="TouchScreenButton" parent="."]
+position = Vector2(1143, 389)
+
+[node name="TouchScreenButton2" type="TouchScreenButton" parent="."]
+position = Vector2(1421, 400)
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.56108, 19.947157, 31.86915)
+stream = ExtResource("4_uucx4")
+autoplay = true
+
+[node name="Sketchfab_Scene" parent="." instance=ExtResource("4_oqwal")]
+transform = Transform3D(0.99971414, 0, -0.023908764, 0, 1, 0, 0.023908764, 0, 0.99971414, 2.4811325, -1.3695726, -7.5969014)
+mesh = SubResource("BoxMesh_uucx4")
