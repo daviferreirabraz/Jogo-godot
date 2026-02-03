@@ -1,0 +1,47 @@
+name: Cloud-PC-Windows10-i9
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-cloud-pc:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install AWS CLI
+        run: |
+          sudo apt update
+          sudo apt install -y awscli
+
+      - name: Configure AWS
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set region ${{ secrets.AWS_REGION }}
+
+      - name: Create Windows 10 Cloud PC (36GB RAM)
+        run: |
+          aws ec2 run-instances \
+            --image-id ami-0c02fb55956c7d316 \
+            --instance-type m6i.4xlarge \
+            --key-name cloudpc-key \
+            --security-group-ids sg-xxxxxxxx \
+            --subnet-id subnet-xxxxxxxx \
+            --block-device-mappings '[{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":100}}]' \
+            --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=Cloud-PC-Windows10}]'
+
+      - name: Enable RDP + Tailscale (UserData)
+        run: |
+          echo "<powershell>
+          net user cloudpc P@ssw0rd123 /add
+          net localgroup administrators cloudpc /add
+
+          Set-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name fDenyTSConnections -Value 0
+          Enable-NetFirewallRule -DisplayGroup 'Remote Desktop'
+
+          winget install tailscale.tailscale -h
+          tailscale up
+          </powershell>" > userdata.ps1
